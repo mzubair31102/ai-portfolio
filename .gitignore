@@ -1,3 +1,6 @@
 venv/
 /venv
 .env
+azd.py
+/azd.py
+azd
