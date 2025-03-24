@@ -104,3 +104,10 @@ SELECT * FROM test_table;
 Exit PostgreSQL
 
 \q
+
+
+Git
+
+git add .
+git commit -m "message"
+git push origin main
