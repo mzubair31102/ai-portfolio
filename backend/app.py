@@ -72,7 +72,7 @@ def openai_4omini(prompt, input_text):
     return response.choices[0].message.content
 
 
-@app.route("/api/chat", methods=["GET"])
+@app.route("/api/chat", methods=["GET", "POST", "OPTIONS"])
 def chat():
     try:
         # Get input text from query parameter
