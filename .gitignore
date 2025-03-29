@@ -1,8 +1,25 @@
+# Ignore Python virtual environments
 venv/
-/venv
-.env
+.env/
+
+# Ignore Azure Dev-related files
 azd.py
-/azd.py
 azd
+
+# Ignore test scripts
 test.py
-/test.py    
+
+# Ignore compiled Python files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Ignore IDE/editor-specific files
+.vscode/
+.idea/
+*.sublime-workspace
+
+# Ignore logs and temp files
+*.log
+*.tmp
