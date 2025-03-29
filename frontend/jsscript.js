@@ -1,4 +1,3 @@
-
   // Toggle sidebar on mobile
   document.getElementById("sidebarToggle").addEventListener("click", function() {
     document.getElementById("sidebar").classList.toggle("active");
@@ -13,12 +12,12 @@
   async function sendMessage() {
     const userInput = document.getElementById("userInput");
     const chatMessages = document.getElementById("chatMessages");
-    const message = userInput.value.trim();
+    const message = encodeURIComponent(userInput.value.trim()); // Encode message for URL
 
     if (!message) return;
 
     // Add user message to chat
-    addMessageToChat('user', message);
+    addMessageToChat('user', userInput.value.trim());
     userInput.value = "";
     
     // Create loading indicator
@@ -26,13 +25,12 @@
     addLoadingIndicator(loadingId);
     
     try {
-      // Send POST request to API
-      const response = await fetch('http://localhost:5000/api/chat', {
-        method: 'POST',
+      // Send GET request to API with message as a query parameter
+      const response = await fetch(`http://localhost:5000/api/chat?message=${message}`, {
+        method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ message: message })
+        }
       });
 
       if (!response.ok) {
@@ -90,4 +88,3 @@
       element.remove();
     }
   }
-
