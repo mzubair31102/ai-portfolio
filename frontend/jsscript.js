@@ -90,3 +90,4 @@
       element.remove();
     }
   }
+
