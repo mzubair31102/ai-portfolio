@@ -79,27 +79,23 @@ def openai_4omini(prompt, input_text):
     return jsonify({"response": response.choices[0].message.content})
 
 @app.route("/api/chat", methods=["POST"])
-# def chat():
-#     try:
-#         # Get input text from request
-#         data = request.get_json()
-#         input_text = data.get("message", "").strip()
-        
-#         if not input_text:
-#             return jsonify({"error": "Empty message"}), 400
-        
-#         # System prompt
-#         prompt = "You are a helpful assistant your name is Zubair."
-        
-#         # Get response from OpenAI
-#         response = openai_4omini(prompt, input_text)
-#         return response
-        
-#     except Exception as e:
-#         return jsonify({"error": str(e)}), 500
 def chat():
-    data = request.get_json()
-    message = data.get("message", "")
-    return jsonify({"response": f"You said: {message}"})
+    try:
+        # Get input text from request
+        data = request.get_json()
+        input_text = data.get("message", "").strip()
+        
+        if not input_text:
+            return jsonify({"error": "Empty message"}), 400
+        
+        # System prompt
+        prompt = "You are a helpful assistant your name is Zubair."
+        
+        # Get response from OpenAI
+        response = openai_4omini(prompt, input_text)
+        return response
+        
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 if __name__ == "__main__":
-    app.run(debug=True)  # No debug mode in production
+    app.run(debug=True,host='0.0.0.0',port=5000)  # No debug mode in production
