@@ -1,10 +1,14 @@
-@echo on
+@echo off
 setlocal enabledelayedexpansion
 
 echo ==========================
 echo Step 1: Adding changes to Git
 echo ==========================
 git add .
+
+:: Prevent .env from being added
+git reset .env
+
 if %errorlevel% neq 0 (
     echo ERROR: Failed to add files to Git.
     exit /b %errorlevel%
