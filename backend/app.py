@@ -77,38 +77,25 @@ def openai_4omini(prompt, input_text):
     print(response.choices[0].message.content)
     return jsonify({"response": response.choices[0].message.content})
 
-@app.route("/api/chat", methods=["POST", "OPTIONS"])
-def handle_options():
-    # Handle preflight request
-    response = jsonify({"message": "CORS preflight response"})
-    response.headers.add("Access-Control-Allow-Origin", "*")
-    response.headers.add("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
-    response.headers.add("Access-Control-Allow-Headers", "Content-Type, Authorization")
-    return response
-# def chat():
-#     try:
-#         # Get input text from request
-#         data = request.get_json()
-#         input_text = data.get("message", "").strip()
+@app.route("/api/chat", methods=["POST"])
+def chat():
+    try:
+        # Get input text from request
+        data = request.get_json()
+        input_text = data.get("message", "").strip()
         
-#         if not input_text:
-#             return jsonify({"error": "Empty message"}), 400
+        if not input_text:
+            return jsonify({"error": "Empty message"}), 400
         
-#         # System prompt
-#         prompt = "You are a helpful assistant your name is Zubair."
+        # System prompt
+        prompt = "You are a helpful assistant your name is Zubair."
         
-#         # Get response from OpenAI
-#         response = openai_4omini(prompt, input_text)
-#         # Manually set CORS headers
-#         response.headers.add("Access-Control-Allow-Origin", "*")
-#         response.headers.add("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
-#         response.headers.add("Access-Control-Allow-Headers", "Content-Type, Authorization")
-#         return response
+        # Get response from OpenAI
+        response = openai_4omini(prompt, input_text)
         
-#     except Exception as e:
-#         return jsonify({"error": str(e)}), 500
-    
-
-
+        return response
+        
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000,debug=True)  # No debug mode in production
