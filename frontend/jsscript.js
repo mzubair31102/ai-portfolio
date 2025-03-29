@@ -10,36 +10,33 @@ document.getElementById("userInput").addEventListener("keypress", function (e) {
 
 async function sendMessage() {
   const userInput = document.getElementById("userInput");
-  const chatMessages = document.getElementById("chatMessages");
   const message = userInput.value.trim();
-
   if (!message) return;
 
-  // Add user message to chat
   addMessageToChat("user", message);
   userInput.value = "";
 
-  // Create loading indicator
   const loadingId = "loading-" + Date.now();
   addLoadingIndicator(loadingId);
 
   try {
-    // Send GET request to API
-    const response = await fetch(`http://localhost:5000/api/chat?message=${encodeURIComponent(message)}`);
+      const response = await fetch("http://localhost:5000/api/chat?message=" + encodeURIComponent(message), {
+          method: "GET",
+          headers: {
+              "Content-Type": "application/json"
+          },
+          mode: "cors"  // ✅ Ensure CORS is enabled in fetch
+      });
 
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
+      if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
 
-    const data = await response.json();
-
-    // Remove loading and add API response
-    removeLoadingIndicator(loadingId);
-    addMessageToChat("assistant", data.response || "Sorry, I couldn't process that.");
+      const data = await response.json();
+      removeLoadingIndicator(loadingId);
+      addMessageToChat("assistant", data.response || "Sorry, I couldn't process that.");
   } catch (error) {
-    console.error("API call failed:", error);
-    removeLoadingIndicator(loadingId);
-    addMessageToChat("assistant", "Sorry, there was an error processing your request.");
+      console.error("API call failed:", error);
+      removeLoadingIndicator(loadingId);
+      addMessageToChat("assistant", "Sorry, there was an error processing your request.");
   }
 }
 
