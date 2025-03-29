@@ -5,8 +5,9 @@ from flask_cors import CORS
 import os
 from openai import AzureOpenAI
 from dotenv import load_dotenv
-app = Flask(__name__)
 from flask_cors import CORS
+
+app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "*"}})  # Allow all origins
 
 # Load environment variables from .env file
