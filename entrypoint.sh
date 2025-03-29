@@ -30,7 +30,7 @@ gunicorn --bind 0.0.0.0:5000 --workers 4 backend.app:app &>> /var/log/flask.log 
 # gunicorn --workers 4 --timeout 120 --bind 0.0.0.0:5000 backend.app:app
 
 # Serve frontend using Python's HTTP server
-cd frontend && python -m http.server 80 &>> /var/log/frontend.log &
+cd frontend && python -m http.server 80 --directory . &>> /var/log/frontend.log &
 
 # Keep the container running
 tail -f /var/log/flask.log /var/log/frontend.log
