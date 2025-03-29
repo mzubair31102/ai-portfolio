@@ -23,6 +23,7 @@ COPY nginx.conf /etc/nginx/sites-available/default
 
 # Copy database initialization script
 COPY database/init.sql /docker-entrypoint-initdb.d/init.sql
+ENV FLASK_ENV=development
 
 # Expose necessary ports
 EXPOSE 80 5000 5432
