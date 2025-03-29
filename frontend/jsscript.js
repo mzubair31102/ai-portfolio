@@ -29,6 +29,7 @@
       // Send POST request to API
       const response = await fetch('http://localhost:5000/api/chat', {
         method: 'POST',
+        mode: "no-cors",
         headers: {
           'Content-Type': 'application/json',
         },
