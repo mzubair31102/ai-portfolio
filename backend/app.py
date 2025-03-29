@@ -1,22 +1,23 @@
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify,request
 import os
 import psycopg2
 from flask_cors import CORS
+import os
 from openai import AzureOpenAI
 from dotenv import load_dotenv
-
 app = Flask(__name__)
-CORS(app, resources={r"/api/*": {"origins": "*"}})  # Cache preflight for 10 minutes
+from flask_cors import CORS
+CORS(app, resources={r"/api/*": {"origins": "*"}}, max_age=600)  # Cache preflight for 10 minutes
 
 # Load environment variables from .env file
 load_dotenv()
 
-# Load OpenAI API endpoint and key
+#Load OpenAi_4omini api endpoint and key from environment variables
 openai_4omini_endpoint = os.getenv("OPENAI_4omini_ENDPOINT")
 openai_4omini_api_key = os.getenv("OPENAI_4omini_API_KEY")
 
 
-# Database connection function
+# Database connection
 def get_db_connection():
     try:
         conn = psycopg2.connect(
@@ -28,7 +29,6 @@ def get_db_connection():
         return conn
     except Exception as e:
         return str(e)
-
 
 @app.route("/api/data")
 def get_data():
@@ -42,7 +42,6 @@ def get_data():
     cur.close()
     conn.close()
     return jsonify(data)
-
 
 def openai_4omini(prompt, input_text):
     endpoint = openai_4omini_endpoint
@@ -60,8 +59,14 @@ def openai_4omini(prompt, input_text):
 
     response = client.chat.completions.create(
         messages=[
-            {"role": "system", "content": prompt},
-            {"role": "user", "content": input_text}
+            {
+                "role": "system",
+                "content": prompt,
+            },
+            {
+                "role": "user",
+                "content": input_text,
+            }
         ],
         max_tokens=4096,
         temperature=1.0,
@@ -69,28 +74,27 @@ def openai_4omini(prompt, input_text):
         model=deployment
     )
 
-    return response.choices[0].message.content
+    print(response.choices[0].message.content)
+    return jsonify({"response": response.choices[0].message.content})
 
-
-@app.route("/api/chat", methods=["GET", "POST", "OPTIONS"])
+@app.route("/api/chat", methods=["POST"])
 def chat():
     try:
-        # Get input text from query parameter
-        input_text = request.args.get("message", "").strip()
-
+        # Get input text from request
+        data = request.get_json()
+        input_text = data.get("message", "").strip()
+        
         if not input_text:
             return jsonify({"error": "Empty message"}), 400
-
+        
         # System prompt
-        prompt = "You are a helpful assistant. Your name is Zubair."
-
+        prompt = "You are a helpful assistant your name is Zubair."
+        
         # Get response from OpenAI
-        response_text = openai_4omini(prompt, input_text)
-        return jsonify({"response": response_text})
-
+        response = openai_4omini(prompt, input_text)
+        return response
+        
     except Exception as e:
         return jsonify({"error": str(e)}), 500
-
-
 if __name__ == "__main__":
     app.run(debug=True)  # No debug mode in production
