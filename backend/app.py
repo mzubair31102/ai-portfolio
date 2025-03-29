@@ -6,7 +6,7 @@ from openai import AzureOpenAI
 from dotenv import load_dotenv
 
 app = Flask(__name__)
-CORS(app, resources={r"/api/*": {"origins": "*"}}, max_age=600)  # Cache preflight for 10 minutes
+CORS(app, resources={r"/api/*": {"origins": "*"}})  # Cache preflight for 10 minutes
 
 # Load environment variables from .env file
 load_dotenv()
