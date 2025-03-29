@@ -6,8 +6,7 @@ import os
 from openai import AzureOpenAI
 from dotenv import load_dotenv
 app = Flask(__name__)
-from flask_cors import CORS
-CORS(app, resources={r"/api/*": {"origins": "*"}}, max_age=600)  # Cache preflight for 10 minutes
+CORS(app, resources={r"/*": {"origins": "*"}}, supports_credentials=True, max_age=600)  # Cache preflight for 10 minutes
 
 # Load environment variables from .env file
 load_dotenv()
@@ -77,24 +76,32 @@ def openai_4omini(prompt, input_text):
     print(response.choices[0].message.content)
     return jsonify({"response": response.choices[0].message.content})
 
-@app.route("/api/chat", methods=["POST"])
+# Unified API route for chat and CORS preflight
+@app.route("/api/chat", methods=["POST", "OPTIONS"])
 def chat():
-    try:
-        # Get input text from request
-        data = request.get_json()
-        input_text = data.get("message", "").strip()
-        
-        if not input_text:
-            return jsonify({"error": "Empty message"}), 400
-        
-        # System prompt
-        prompt = "You are a helpful assistant your name is Zubair."
-        
-        # Get response from OpenAI
-        response = openai_4omini(prompt, input_text)
-        return response
-        
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
+    if request.method == "OPTIONS":
+        response = jsonify({"message": "CORS Preflight Handled"})
+    else:
+        try:
+            data = request.get_json()
+            input_text = data.get("message", "").strip()
+
+            if not input_text:
+                return jsonify({"error": "Empty message"}), 400
+
+            prompt = "You are a helpful assistant. Your name is Zubair."
+            ai_response = openai_4omini(prompt, input_text)
+            
+            response = jsonify({"response": ai_response})
+        except Exception as e:
+            response = jsonify({"error": str(e)}), 500
+
+    # Manually set CORS headers
+    response.headers.add("Access-Control-Allow-Origin", "*")
+    response.headers.add("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+    response.headers.add("Access-Control-Allow-Headers", "Content-Type, Authorization")
+
+    return response
+
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000,debug=True)  # No debug mode in production
