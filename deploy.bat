@@ -21,14 +21,16 @@ if not exist %VERSION_FILE% (
     echo v1 > %VERSION_FILE%
     set VERSION=v1
 ) else (
-    for /f "delims=v" %%i in (%VERSION_FILE%) do set /a NEXT_VERSION=%%i+1
-    echo v!NEXT_VERSION! > %VERSION_FILE%
-    set VERSION=v!NEXT_VERSION!
+    for /f "delims=v" %%i in (%VERSION_FILE%) do (
+        set /a NEXT_VERSION=%%i+1
+        set VERSION=v!NEXT_VERSION!
+    )
+    echo !VERSION! > %VERSION_FILE%
 )
-echo Commit version updated to: %VERSION%
+echo Commit version updated to: !VERSION!
 
 :: Commit with the new version number
-git commit -m "%VERSION%"
+git commit -m "!VERSION!"
 if %errorlevel% neq 0 (
     echo ERROR: Git commit failed.
     exit /b %errorlevel%
@@ -83,7 +85,7 @@ echo Successfully built Docker image: %IMAGE_NAME%
 echo ==========================
 echo Step 7: Running Docker Container
 echo ==========================
-docker run -d -p 80:80 -p 5000:5000 -p 5432:5432 %IMAGE_NAME%
+docker run -v "%CD%:/app" -d -p 80:80 -p 5000:5000 -p 5432:5432 %IMAGE_NAME%
 if %errorlevel% neq 0 (
     echo ERROR: Docker run failed.
     exit /b %errorlevel%
