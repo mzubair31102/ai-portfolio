@@ -4,3 +4,5 @@ venv/
 azd.py
 /azd.py
 azd
+test.py
+/test.py    
