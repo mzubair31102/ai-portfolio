@@ -39,6 +39,10 @@
 # Dev container entrypoint script
 # This script is used to set up the development environment for a Flask application
 #!/bin/bash
+# Start Redis
+
+echo "Starting Redis Server..."
+service redis-server start
 
 # Start PostgreSQL service
 service postgresql start

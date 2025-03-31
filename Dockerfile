@@ -7,7 +7,8 @@ WORKDIR /app
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
     postgresql postgresql-contrib \
-    nginx
+    nginx \
+    redis-server
 
 # Ensure database folder is accessible
 RUN mkdir -p /var/lib/postgresql/data && chown -R postgres:postgres /var/lib/postgresql
@@ -23,7 +24,7 @@ COPY nginx.conf /etc/nginx/sites-available/default
 COPY database/init.sql /docker-entrypoint-initdb.d/init.sql
 
 # Expose necessary ports
-EXPOSE 80 5000 5432
+EXPOSE 80 5000 5432 6379
 
 # Set environment variable for Flask development
 ENV FLASK_ENV=development
