@@ -6,6 +6,8 @@ from flask_cors import CORS
 from openai import AzureOpenAI
 from dotenv import load_dotenv
 import sys
+import redis
+
 sys.path.append('/app/backend')
 
 # Now try importing the modules
@@ -14,6 +16,8 @@ from services.scraper import get_text_from_url
 
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "*"}})  # Allow all origins
+# Connect to Redis (running inside the same container)
+redis_client = redis.Redis(host='localhost', port=6379, db=0)
 
 # Load environment variables from .env file
 load_dotenv()
@@ -92,21 +96,42 @@ def openai_4omini(prompt, input_text):
         logger.error(f"OpenAI error: {str(e)}")
         return jsonify({"error": str(e)}), 500
 
+# Route for chat API
 @app.route("/api/chat", methods=["POST"])
 def chat():
     try:
         data = request.get_json()
         logger.debug(f"Received data: {data}")
+        
+        # Get user input and session ID from request
         input_text = data.get("message", "").strip()
         session_id = data.get("sessionId", None)
         logger.debug(f"Session ID: {session_id}")
+        
         if not input_text:
             logger.error("Empty message received")
             return jsonify({"error": "Empty message"}), 400
 
-        prompt = "You are a helpful assistant your name is Zubair."
-        response = openai_4omini(prompt, input_text)
-        return response
+        # Get conversation history from Redis (if any)
+        history_key = f"session:{session_id}:history"
+        conversation_history = redis_client.get(history_key)
+
+        if conversation_history:
+            # If history exists, decode and append the new input
+            conversation_history = conversation_history.decode('utf-8') + f"\nUser: {input_text}"
+        else:
+            # If no history exists, initialize with prompt and user input
+            conversation_history = f"You are a helpful assistant. Your name is Zubair.\nUser: {input_text}"
+
+        # Send the entire conversation history (prompt + user input) to OpenAI for response
+        assistant_response = openai_4omini(conversation_history, input_text)
+
+        # Save the updated conversation history to Redis
+        conversation_history += f"\nAssistant: {assistant_response}"
+        redis_client.set(history_key, conversation_history)
+
+        # Return the assistant response to the user
+        return jsonify({"response": assistant_response}), 200
     except Exception as e:
         logger.error(f"Chat error: {str(e)}")
         return jsonify({"error": str(e)}), 500
@@ -140,7 +165,7 @@ def get_logs():
         return jsonify({"error": str(e)}), 500
 
 
-@app.route('/test-redis', methods=['GET'])
+@app.route('/api/redis', methods=['GET'])
 def test_redis():
     try:
         redis_client.set("test_key", "Hello, Redis!")
