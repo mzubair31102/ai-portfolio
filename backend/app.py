@@ -118,8 +118,10 @@ def chat():
     try:
         # Get input text from request
         data = request.get_json()
+        print(data)
         input_text = data.get("message", "").strip()
-        
+        session_id = data.get("sessionId", None)
+        print(session_id)
         if not input_text:
             return jsonify({"error": "Empty message"}), 400
         
