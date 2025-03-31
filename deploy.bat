@@ -89,7 +89,7 @@ echo Successfully built Docker image: %IMAGE_NAME%
 echo ==========================
 echo Step 7: Running Docker Container
 echo ==========================
-docker run -v "%CD%:/app" -d -p 80:80 -p 5000:5000 -p 5432:5432 -v $(pwd):/app -it %IMAGE_NAME%
+docker run -v "%CD%:/app" -d -p 80:80 -p 5000:5000 -p 5432:5432 -it %IMAGE_NAME%
 if %errorlevel% neq 0 (
     echo ERROR: Docker run failed.
     exit /b %errorlevel%
