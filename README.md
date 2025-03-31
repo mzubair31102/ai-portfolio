@@ -111,3 +111,58 @@ Git
 git add .
 git commit -m "message"
 git push origin main
+
+
+
+
+Step 1: Start Ubuntu
+Since Ubuntu is stopped, we need to start it.
+
+1.1 Open Ubuntu in WSL
+In Command Prompt or PowerShell, run:
+
+powershell
+Copy
+Edit
+wsl -d Ubuntu
+✅ This will start Ubuntu and open a Linux terminal.
+
+Step 2: Install Redis in Ubuntu
+Now that Ubuntu is running, let's install Redis inside it.
+
+2.1 Update Package List
+Run this command to update your system:
+
+ 
+Edit
+sudo apt update
+2.2 Install Redis
+Now, install Redis using:
+
+ 
+Edit
+sudo apt install redis -y
+✅ This will install the latest Redis version.
+
+Step 3: Start and Verify Redis
+3.1 Start Redis Server
+Run:
+
+ 
+Edit
+sudo service redis-server start
+✅ This starts the Redis service.
+
+3.2 Check Redis Status
+To confirm Redis is running, use:
+
+ 
+Edit
+sudo service redis-server status
+You should see something like:
+
+arduino
+Copy
+Edit
+● redis-server.service - Advanced key-value store
+   Active: active (running) since ...

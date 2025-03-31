@@ -66,71 +66,61 @@ def get_data():
 
 def openai_4omini(prompt, input_text):
     try:
-        endpoint = openai_4omini_endpoint
-        model_name = "gpt-4o-mini"
-        deployment = "ai-portfolio-gpt-4o-mini"
-
-        subscription_key = openai_4omini_api_key
-        api_version = "2024-12-01-preview"
-
         client = AzureOpenAI(
-            api_version=api_version,
-            azure_endpoint=endpoint,
-            api_key=subscription_key,
+            api_version="2024-12-01-preview",
+            azure_endpoint=openai_4omini_endpoint,
+            api_key=openai_4omini_api_key
         )
-
         response = client.chat.completions.create(
-            messages=[
-                {"role": "system", "content": prompt},
-                {"role": "user", "content": input_text},
-            ],
+            model="ai-portfolio-gpt-4o-mini",
+            messages=[{"role": "system", "content": prompt}, {"role": "user", "content": input_text}],
             max_tokens=1000,
             temperature=0.5,
-            top_p=0.5,
-            model=deployment,
+            top_p=0.5
         )
-
-        logger.debug(f"OpenAI response: {response.choices[0].message.content}")
-        return jsonify({"response": response.choices[0].message.content})
+        
+        response_text = response.choices[0].message.content
+        print("OpenAI Response:", response_text)  # Debugging
+        return response_text  # Fix: Return string, not jsonify
     except Exception as e:
-        logger.error(f"OpenAI error: {str(e)}")
-        return jsonify({"error": str(e)}), 500
+        logger.error(f"OpenAI API error: {str(e)}")
+        return "OpenAI API request failed"  # Return error message as string
 
-# Route for chat API
 @app.route("/api/chat", methods=["POST"])
 def chat():
     try:
         data = request.get_json()
         logger.debug(f"Received data: {data}")
         
-        # Get user input and session ID from request
         input_text = data.get("message", "").strip()
         session_id = data.get("sessionId", None)
+
         logger.debug(f"Session ID: {session_id}")
-        
+
         if not input_text:
             logger.error("Empty message received")
             return jsonify({"error": "Empty message"}), 400
 
-        # Get conversation history from Redis (if any)
         history_key = f"session:{session_id}:history"
         conversation_history = redis_client.get(history_key)
 
         if conversation_history:
-            # If history exists, decode and append the new input
             conversation_history = conversation_history.decode('utf-8') + f"\nUser: {input_text}"
         else:
-            # If no history exists, initialize with prompt and user input
             conversation_history = f"You are a helpful assistant. Your name is Zubair.\nUser: {input_text}"
 
-        # Send the entire conversation history (prompt + user input) to OpenAI for response
+        # Call OpenAI function
         assistant_response = openai_4omini(conversation_history, input_text)
+        
+        # Debugging assistant response
+        print("Assistant Response:", assistant_response)
 
-        # Save the updated conversation history to Redis
+        # Save history in Redis
         conversation_history += f"\nAssistant: {assistant_response}"
         redis_client.set(history_key, conversation_history)
 
-        # Return the assistant response to the user
+        print("Updated Conversation History:", conversation_history)  # Debugging
+
         return jsonify({"response": assistant_response}), 200
     except Exception as e:
         logger.error(f"Chat error: {str(e)}")
