@@ -6,3 +6,6 @@ psycopg2
 python-dotenv
 gunicorn 
 openai
+duckduckgo_search
+beautifulsoup4
+requests
