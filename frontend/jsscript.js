@@ -27,7 +27,7 @@
     
     try {
       // Send POST request to API
-      const response = await fetch('http://aiportfolio-dns.eastus.azurecontainer.io/api/chat', {
+      const response = await fetch('http://localhost:5000/api/chat', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
