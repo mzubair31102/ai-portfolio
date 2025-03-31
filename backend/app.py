@@ -5,6 +5,10 @@ import psycopg2
 from flask_cors import CORS
 from openai import AzureOpenAI
 from dotenv import load_dotenv
+import sys
+sys.path.append('/app/backend')
+
+# Now try importing the modules
 from services.search_url import duckduckgo_search
 from services.scraper import get_text_from_url
 
