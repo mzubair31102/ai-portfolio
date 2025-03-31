@@ -123,6 +123,19 @@ def search():
     except Exception as e:
         logger.error(f"Search error: {str(e)}")
         return jsonify({"error": str(e)}), 500
+app.route("/api/logs", methods=["GET"])
+def get_logs():
+    try:
+        # Return the last 100 lines of the log file or recent logs
+        log_file = '/path/to/your/log/file.log'  # Adjust the log file path if needed
+        with open(log_file, 'r') as file:
+            logs = file.readlines()
+        
+        # Limit to last 100 lines for performance
+        return jsonify({"logs": logs[-100:]})
+    except Exception as e:
+        logger.error(f"Error fetching logs: {str(e)}")
+        return jsonify({"error": str(e)}), 500
 
 if __name__ == "__main__":
     app.run(debug=True, host='0.0.0.0', port=5000)  # Exposed for container
