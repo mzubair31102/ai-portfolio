@@ -7,7 +7,6 @@ from openai import AzureOpenAI
 from dotenv import load_dotenv
 import sys
 import redis
-
 sys.path.append('/app/backend')
 
 # Now try importing the modules
@@ -107,7 +106,7 @@ def chat():
         if conversation_history:
             conversation_history = conversation_history.decode('utf-8') + f"\nUser: {input_text}"
         else:
-            conversation_history = f"You are a helpful assistant. Your name is Zubair.\nUser: {input_text}"
+            conversation_history = f"You are a helpful assistant. Your name is Zubair. You are senior ai engineer. Your goal is to make conversations as human-like. be friendly. in start introduce your self.\nUser: {input_text}"
 
         # Call OpenAI function
         assistant_response = openai_4omini(conversation_history, input_text)
@@ -124,6 +123,44 @@ def chat():
         return jsonify({"response": assistant_response}), 200
     except Exception as e:
         logger.error(f"Chat error: {str(e)}")
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route("/api/content_gen", methods=["POST"])
+def content_gen():
+    try:
+        data = request.get_json()
+        input_text = data.get("message", "").strip()
+        session_id = data.get("sessionId", None)
+
+        if not input_text:
+            logger.error("Empty message received")
+            return jsonify({"error": "Empty message"}), 400
+        openai_4omini_prompt = "Rewrite query in a way that it can be used to search for related content on the web."
+        input_query = f"Rewrite the following query: {input_text}"
+
+        query = openai_4omini(openai_4omini_prompt, input_query)
+        print("------------------AI Genrated Query ------------------" + query)  # Debugging
+        urls_list = duckduckgo_search(str(query))
+        if not urls_list:
+            print("No URLs found for the query.")
+        for url in urls_list:
+            print("URL:>>>>>>>>>>>", url)  # Debugging
+        # Pass one by one url to get_text_from_url and get the text and save and extend it in redis and return the response with that next
+        for url in urls_list:
+            text = get_text_from_url(url)
+            print("Text from URL:>>>>>>>>>>>", text)
+            # Save the text in Redis with a session_id
+            redis_client.set(f"session:{session_id}:content:{url}", text)
+            # Extend the conversation history with the text
+            conversation_history = redis_client.get(f"session:{session_id}:history")
+            print("Conversation History:>>>>>>>>>>>", conversation_history)
+            
+
+        return jsonify({"response": "Success"}), 200
+
+    except Exception as e:
+        logger.error(f"Content generation error: {str(e)}")
         return jsonify({"error": str(e)}), 500
 
 @app.route("/api/search", methods=["POST"])
