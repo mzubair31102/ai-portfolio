@@ -26,6 +26,7 @@ This template is ideal as a **starter project**, MVP, or full-scale production s
 - **Frontend:** HTML, CSS, JavaScript, Bootstrap
 - **Database:** PostgreSQL
 - **In-Memory Cache:** Redis
+- **LLM:** Azure AI Foundry
 - **Containerization:** Docker
 - **CI/CD Automation:** GitHub Actions
 - **Hosting Containers:** Azure Container Instances (ACI)
