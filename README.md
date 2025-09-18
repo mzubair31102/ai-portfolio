@@ -1,6 +1,73 @@
-<img width="1920" height="1080" alt="Screenshot (215)" src="https://github.com/user-attachments/assets/84b7a95d-e60c-49d0-ab09-a451e984e8cb" />📌 Project Plan & Architecture
+# AI Chatbot & Assistant Template with Azure AI Foundry | Full Azure Deployment
 
-![chrome_XzCBOglTkF](https://github.com/user-attachments/assets/dd797592-ce70-47ac-961f-b445b4f497f0)
+![Project Architecture](https://github.com/user-attachments/assets/dd797592-ce70-47ac-961f-b445b4f497f0)
+
+## 🚀 Project Overview
+
+This project is a **fully functional AI Chatbot & Assistant template**, built with **Azure AI Foundry** for AI model integration and **full deployment on Azure**. It provides a complete, end-to-end solution for developers who want to quickly launch AI-driven applications on the cloud.
+
+### Key Highlights
+
+- **In-memory chat history using Redis** for fast and seamless conversations.
+- **Azure AI Foundry integration** for deploying and managing OpenAI models.
+- **Full Azure deployment** on **Azure Container Instances (ACI)** with a **Nginx-powered frontend** and a robust **backend API architecture**.
+- **CI/CD Automation using GitHub Actions**, enabling automatic Docker image build, push, and Azure deployment.
+- A **ready-to-use template** for anyone looking to build AI assistants, chatbots, or any AI-driven solutions on the Azure platform.
+
+This template is ideal as a **starter project**, MVP, or full-scale production solution.
+
+---
+
+## 📌 Project Plan & Architecture
+
+### Technologies & Services
+
+- **Backend:** Flask (Python)
+- **Frontend:** HTML, CSS, JavaScript, Bootstrap
+- **Database:** PostgreSQL
+- **In-Memory Cache:** Redis
+- **Containerization:** Docker
+- **CI/CD Automation:** GitHub Actions
+- **Hosting Containers:** Azure Container Instances (ACI)
+- **Private Image Storage:** Docker Hub (Private Repository)
+- **Optional (Production):** Azure PostgreSQL Database
+
+---
+
+## ⚡ Implementation Steps
+
+### 🛠️ Step 1: Local Setup & Development
+
+1. Set up Python & Flask backend
+2. Configure PostgreSQL locally
+3. Develop frontend (HTML, CSS, JS, Bootstrap)
+4. Test APIs & frontend locally
+
+### 🚀 Step 2: Containerize the Application
+
+1. Create a Dockerfile for Flask, frontend, and PostgreSQL
+2. Define services using `docker-compose.yml`
+3. Run and test the application inside Docker
+
+### 🔄 Step 3: Full Azure Deployment
+
+1. Push code to GitHub (public repo)
+2. Trigger GitHub Actions on push
+3. Build Docker image locally
+4. Push image to **Private Docker Hub Repository**
+5. Deploy and replace running container in **Azure Container Instances (ACI)**
+6. Integrate **Azure AI Foundry models** for AI chatbot functionality
+
+---
+
+## ⚙️ Setup & Installation
+
+### Prerequisites
+
+- Python 3.11.0
+- Docker 27.0.3
+- Docker Compose v2.28.1
+- Azure CLI installed
 
 
 🔹 Technologies & Services
