@@ -1,4 +1,7 @@
-📌 Project Plan & Architecture
+<img width="1920" height="1080" alt="Screenshot (215)" src="https://github.com/user-attachments/assets/84b7a95d-e60c-49d0-ab09-a451e984e8cb" />📌 Project Plan & Architecture
+
+![chrome_XzCBOglTkF](https://github.com/user-attachments/assets/dd797592-ce70-47ac-961f-b445b4f497f0)
+
 
 🔹 Technologies & Services
 
